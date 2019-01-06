@@ -39,8 +39,10 @@ display_help ()
   return;
 }
 
-/* Parse the arguments for the dirver.  */
-voild
+/* Parse the arguments for the dirver.
+   If meet the -h option, return true, otherwise return false.  */
+
+bool
 parse_arguments (int argc, char **argv)
 {
   int i = 0;
@@ -49,26 +51,80 @@ parse_arguments (int argc, char **argv)
     {
       if (!strncmp (argv[i], "--config=", strlen ("--config=")))
         inc_cs_map_file_ = argv[i] + strlen ("--config=");
-      if (!strncmp (argv[i], "-o", 2))
-	
-  
+      else if (!strncmp (argv[i], "-o", 2))
+	inc_out_file_name = argv[++i];
+      else if (!strncmp (argv[i], "-h", 2)
+        {
+	  display_help ();
+	  return true;
+	}
+      else
+        {
+	  trans_error = true;
+	  break;
+	}
+	++i;
     }
+
+    return false;
 }
 
+/* Open files for trans, if any fails return FALSE. */
+
+bool
+trans_open_files ()
+{ 
+  /* map file.  */
+  inc_cs_map_file_ = std::fopen (inc_cs_map_file_name, "r");
+  if (! inc_cs_map_file_)
+    {
+      std::cout << "Fatal: Cann't open "
+	        << inc_cs_map_file_name
+	        << endl;
+      return false;
+    }
+
+  /* input file.  */
+  inc_in_file_ = std::fopen (inc_in_file_name, "w+");
+  if (! inc_in_file_)
+    {
+      std::cout << "Fatal: Cann't open "
+	        << inc_in_file_name
+	        << endl;
+      return false;
+    }
+
+  /* output file.  */
+  if (! inc_out_file_name)
+    inc_out_file_ = inc_in_file_;
+  else
+    inc_out_file_ = std::fopen (inc_out_file_name, "w+");
+  
+  if (! inc_out_file_)
+    {
+      std::cout << "Fatal: Cann't open "
+	        << inc_out_file_name
+	        << endl;
+      return false;
+    }
+
+  return true;
+}
 
 /* Entry point for the trans tool. */
 
 int 
 main (int argc, char *argv[]) 
 {
-  parse_arguments (argc, argv);
-  if (trans_error)
+  if (parse_arguments (argc, argv) || trans_error);
     {
       display_help ();
       return 1;
     }
-
-  
+   
+  /* Open files.  */
+  if (! trans_open_files ());
+    return 1;
 
 
 
