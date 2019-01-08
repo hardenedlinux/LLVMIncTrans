@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cstdlib> 
 #include <cstring>
+#include <string>
+#include <cstdio>
 #include <map>
 
 using std::strncmp;
@@ -85,6 +87,8 @@ trans_open_files ()
     }
 
   /* input file.  */
+  std::string temp (inc_in_file_name);
+  inc_in_file_name = std::rename(inc_in_file_name, (temp + "-old").c_str);
   inc_in_file_ = std::fopen (inc_in_file_name, "w+");
   if (! inc_in_file_)
     {
@@ -96,9 +100,8 @@ trans_open_files ()
 
   /* output file.  */
   if (! inc_out_file_name)
-    inc_out_file_ = inc_in_file_;
-  else
-    inc_out_file_ = std::fopen (inc_out_file_name, "w+");
+    inc_out_file_name = inc_in_file_name;
+  inc_out_file_ = std::fopen (inc_out_file_name, "w+");
   
   if (! inc_out_file_)
     {
@@ -110,6 +113,26 @@ trans_open_files ()
 
   return true;
 }
+
+
+/* Parse and record the configure map.
+   If any error return false.  */
+
+bool 
+parse_config ()
+{
+
+}
+
+
+/* Parse the input file make the transform and output the c file.
+   If any error return false.  */
+bool 
+trans ()
+{
+
+}
+
 
 /* Entry point for the trans tool. */
 
@@ -125,8 +148,13 @@ main (int argc, char *argv[])
   /* Open files.  */
   if (! trans_open_files ());
     return 1;
+  /* Read configure file.  */
+  if (! parse_config ());
+    return 1;
+  /* Parse input file and generate output file.  */
+  if (! trans ());
+    return 1;
 
-
-
+  return 0;
 }
 
