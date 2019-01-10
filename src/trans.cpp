@@ -2,12 +2,7 @@
    Code writed by David fuqiang Fan <feqin1023@gmail.com>.
    Used for transform the LLVM inc file for Capstone.  */
 
-#include <iostream>
-#include <cstdlib> 
-#include <cstring>
-#include <string>
-#include <cstdio>
-#include <map>
+#include "trans.h"
 
 using std::strncmp;
 using std::strlen;
@@ -87,9 +82,9 @@ trans_open_files ()
     }
 
   /* input file.  */
-  std::string temp (inc_in_file_name);
-  inc_in_file_name = std::rename(inc_in_file_name, (temp + "-old").c_str);
-  inc_in_file_ = std::fopen (inc_in_file_name, "w+");
+  //std::string temp (inc_in_file_name);
+  //inc_in_file_name = std::rename(inc_in_file_name, (temp + "-old").c_str);
+  inc_in_file_ = std::fopen (inc_in_file_name, "r");
   if (! inc_in_file_)
     {
       std::cout << "Fatal: Cann't open "
@@ -98,9 +93,22 @@ trans_open_files ()
       return false;
     }
 
+  /* Contains the original LLVM inc file name. For every reason, 128 is a big
+     enough number.  */
+  char temp_name [128];
   /* output file.  */
   if (! inc_out_file_name)
-    inc_out_file_name = inc_in_file_name;
+    {
+      char *pc = temp_name;
+      unsigned len = strlen (inc_in_file_name);
+      assert (len < 128 - 10 && "File name overflow !");
+      std::strncpy (pc, inc_in_file_name, len);
+      /* If the original inc file name is oldFileName.inc, We want the output
+	 file name is oldFileNameTrans.inc.  */
+      // This is strcpy, We need the terminal, and we konwn it is crystal.
+      std::strcpy ( pc + len - 4/* strlen(".inc") */, "Trans.inc");
+      inc_out_file_name = temp_name;
+    }
   inc_out_file_ = std::fopen (inc_out_file_name, "w+");
   
   if (! inc_out_file_)
