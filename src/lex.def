@@ -1,0 +1,12 @@
+/* The config file of trans tool.
+   Code writed by David fuqiang Fan <feqin1023@gmail.com>.
+   Used for transform the LLVM inc file for Capstone.  */
+
+/* We take the LLVM internal datestruct name of llvm-tblgen generated inc file
+   as keywords of LLVMIncTGrans, recongnize them and parse make substitute for
+   the internal datestruct name of Capstone.  */
+
+
+/* The format of this file is
+   LEX().  */
+
