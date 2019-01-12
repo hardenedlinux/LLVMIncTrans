@@ -12,7 +12,7 @@ bool trans_error;
 
 /* Contains the map from LLVM inc to Capstone internal declarations.
    This file is default in the directory same as this driver. */
-char *inc_cs_map_file_name = "trans.config"
+stati char *inc_cs_map_file_name = "trans.def"
 FILE *inc_cs_map_file_;
 
 /* Input inc file.  */
@@ -152,9 +152,12 @@ main (int argc, char *argv[])
       display_help ();
       return 1;
     }
-   
+
   /* Open files.  */
   if (! trans_open_files ());
+    return 1;
+  /* init.  */
+  if (! lex_init ());
     return 1;
   /* Read configure file.  */
   if (! parse_config ());

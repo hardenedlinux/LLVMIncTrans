@@ -12,4 +12,11 @@
 
 // 
 extern bool trans_error;
+// Input config define file.
+extern FILE *inc_cs_map_file_;
+/* Input inc file.  */
+extern FILE *inc_in_file_;
+/* Overrided output file.  */
+extern FILE *inc_out_file_;
+
 
